@@ -1,51 +1,103 @@
-= {lab_name}
+SELinux is a technology to isolate processes/containers running on the
+system to mitigate attacks which take advantage of privilege escalation.
+Udica is a new tool which complements the containers tools (Podman,
+Skopeo, Buildah, etc.) family supported by Red Hat to help improve the
+security of customers container environments.
 
-The `lab_name` var, known as an asciidoc attribute, above was set in `./content/antora.yml` and can be used to set the lab_name or title of your content.
-You are both free to change its value and if you prefer to use a different var name, you can change the value of `lab_name`, for example to `title` in `./content/antora.yml` and then reference it in your content as `\{title}`.
-me
+____
+_NOTE:_ This lab assumes that you have a sound understanding of SELinux
+basics and container fundamentals.
+____
 
-== Variables
+Prior to getting started, we need certain packages such as Udica (which
+is a tool for generating SELinux policies for containers), and
+setools-console (which is a set of tools that can facilitate SELinux
+policy analysis). In this demo, the container runtime related packages
+are already installed.
 
-Other vars can also be set there, such as `ssh_user` and `ssh_password`, and referenced inline in the lab content by using the `\{foo}` syntax.
+Click on the `+Terminal 1+` tab.
 
-This is another var, or asciidoc attribute, from `./content/antora.yml` {my_var}
+.Terminal 1 tab
+image::terminal1tab.png[Terminal 1 tab]
 
-== Writing your lab
+Install the udica and setools-console packages on the container host
 
-Whatever type of content you are writing we'll refer to your *content* as "your lab" in this document.
-
-=== Lab structure
-
-
-Wether you are writing a lab
-
-* First, we will build a monolithic application already compiled as RPM packages and put it into a container. This will allow us to deploy the application, copy it between machines, and update it separately from the operating system. This process affords us a portable and easily maintained component instead of tightly coupling the application with your operating system maintenance.
-
-* In closing we will build a second container on a different operating system version that makes an application not packaged into RPMs. This will be similar to a web application deployment, positioning the correct files at the right locations. To do this, we will pull a project from GitHub and position the component files within our container image. The purpose of this is to achieve a portable application container that can deploy on several different versions of Red Hat Enterprise Linux. This also provides the benefit of decoupling your application maintenance, which would all happen by building new containers versus operating system maintenance. The container is no longer reliant on the operating system installed on the machine where the application is deployed.
-
-
-. Now let's examine this cluster a bit more by describing the cluster (the `$GUID` environment variable is already set for you so you can immediately describe your individual cluster):
-+
-[source,sh,role=execute]
+[source,bash]
 ----
-podman ps
-----
-+
-.Sample Output
-[source,texinfo,subs="attributes"]
-----
-CONTAINER ID  IMAGE                        COMMAND           CREATED      STATUS      PORTS                 NAMES
-2dcfee9e50c4  docker.io/library/httpd:2.4  httpd-foreground  3 hours ago  Up 3 hours  0.0.0.0:8080->80/tcp  showroom-httpd
+dnf install -y udica setools-console
 ----
 
+Get the latest RHEL9 UBI image
 
+[source,bash]
+----
+podman pull registry.access.redhat.com/ubi9/ubi:latest
+----
 
+Use `+podman+` to list the available container images
 
+[source,bash]
+----
+podman images
+----
 
+....
+<a href="#example_image">
+ <img alt="An example image" src="../assets/podmanimages.png" />
+</a>
 
+<a href="#" class="lightbox" id="example_image">
+ <img alt="An example image" src="../assets/podmanimages.png" />
+</a>
 
+Click on the `Terminal 2` tab.
 
-=== Lab Access
+![Terminal 2 tab](../assets/terminal2tab.png)
 
-The terminal window to your right is *already* logged into the lab environment as the `{ssh_user}` user via `ssh`. 
-All steps of this lab are to be completed as the `{ssh_user}` user.
+Create a container runtime using podman which passes in-container accesses to /home through to the host's /home read-only, passes in-container accesses to /var/spool through to the host's /var/spool read-write, and binds the host's port 80 to pass traffic to the container's port 80.
+
+```bash
+CONTAINER=$(podman run -v /home:/home:ro -v /var/spool:/var/spool:rw -d -p 80:80 -it registry.access.redhat.com/ubi9/ubi)
+....
+
+____
+_NOTE:_ The home directory is mounted with read-only access, and the
+/var/spool/ directory is mounted with read-write access.
+____
+
+Go back to `+Terminal 1+`.
+
+Check the status of the application container using podman and get the
+running container id
+
+[source,bash]
+----
+podman ps; CONTAINERID=$(podman ps | grep registry.access.redhat.com | cut -b 1-12)
+----
+
+CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES e47a11d3e2c5
+registry.access.redhat.com/ubi9/ubi:latest /bin/bash 3 seconds ago Up 2
+seconds ago0.0.0.0:80->80/tcp naughty_golick
+
+....
+
+When using SELinux, container processes get assigned a container type called 'container_t'. In `Terminal 1` Verify the SELinux type assigned to the running container.
+
+```bash
+ps -eZ | grep container_t
+....
+
+system_u:system_r:container_t:s0:c182,c1016 25755 pts/0 00:00:00 bash
+
+....
+
+On Red Hat Enterprise Linux, SELinux is enabled by default and in enforcing mode.  You can confirm this by inspecting the output of `sestatus`
+on the system.
+
+```bash
+sestatus
+....
+
+SELinux status: enabled SELinuxfs mount: /sys/fs/selinux SELinux root
+directory: /etc/selinux Loaded policy name: targeted Current mode:
+enforcing << OUTPUT ABRIDGED >>
