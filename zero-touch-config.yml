@@ -15,6 +15,13 @@ antora:
     - name: module-05
       label: Module 5
 tabs:
-  - name: terminal
+  - name: ">_ Terminal 1"
     port: 443
-    path: /wetty
+    path: /tty1
+    user: root
+    host: rhel
+  - name: ">_ Terminal 2"
+    port: 443
+    path: /tty2
+    user: root
+    host: rhel
