@@ -15,7 +15,7 @@ sesearch -A -s my_container.process -t home_root_t -c dir -p read
 .Output
 [source,text]
 ----
-allow my_container.process home_root_t:dir \{ getattr ioctl lock open read search };
+allow my_container.process home_root_t:dir { getattr ioctl lock open read search };
 ----
 
 There is an allow rule in place that allows read access to the */home* directory.
@@ -31,7 +31,7 @@ sesearch -A -s my_container.process -t var_spool_t -c dir -p read
 .Output
 [source,text]
 ----
-allow my_container.process var_spool_t:dir \{ add_name getattr ioctl lock open read remove_name searchwrite };
+allow my_container.process var_spool_t:dir { add_name getattr ioctl lock open read remove_name searchwrite };
 ----
 
 
@@ -48,7 +48,7 @@ sesearch -A -s my_container.process -t port_type -c tcp_socket
 .Output
 [source,text]
 ----
-allow my_container.process http_port_t:tcp_socket \{ name_bind name_connect recv_msg send_msg };
+allow my_container.process http_port_t:tcp_socket { name_bind name_connect recv_msg send_msg };
 ----
 
 Retrieve the SELinux type associated with TCP port 80. TCP port 80 is the port that Apache will bind on.
