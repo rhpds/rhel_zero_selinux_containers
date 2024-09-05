@@ -5,15 +5,15 @@ antora:
   dir: www
   modules:
     - name: index
-      label: Module 1
+      label: Software installation and configuration
     - name: module-02
-      label: Module 2
+      label: Inspecting container access and SELinux policies
     - name: module-03
-      label: Module 3
+      label: Generating SELinux container policies with Udica
     - name: module-04
-      label: Module 4
+      label: Verifying the SELinux container policies with Udica
     - name: module-05
-      label: Module 5
+      label: Re-inspect the running container
 tabs:
   - name: ">_ Terminal 1"
     port: 443
