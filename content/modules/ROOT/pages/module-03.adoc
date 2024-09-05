@@ -1,56 +1,53 @@
-To create the custom SELinux security policy, Udica scans the container
-JSON file to discover which Linux capabilities are required by the
-container. The network ports are a similar situation where Udica uses
-the SELinux userspace libraries to get the correct SELinux label of a
-port that is used by the inspected container.
+= Generating SELinux container policies with Udica
 
-In the `+Terminal 1+` tab of the lab interface, inspect the running
-container using podman to generate a container inspection file in JSON
-format
+To create the custom SELinux security policy, Udica scans the container JSON file to discover which Linux capabilities are required by the container. The network ports are a similar situation where Udica uses the SELinux userspace libraries to get the correct SELinux label of a port that is used by the inspected container.
 
-[source,bash]
+In the `+Terminal 1+` tab of the lab interface, inspect the running container using podman to generate a container inspection file in JSON format
+
+.Command
+[source,bash,subs="+macros,+attributes",role=execute]
 ----
 podman inspect $CONTAINERID > container.json
 ----
 
-Tell Udica to generate the custom SELinux security policy by using the
-container JSON file. In this case the name of the custom SELinux
-security policy is called '`my_container`'
+Tell Udica to generate the custom SELinux security policy by using the container JSON file. In this case the name of the custom SELinux security policy is called '`my_container`'
 
-[source,bash]
+.Command
+[source,bash,subs="+macros,+attributes",role=execute]
 ----
 udica -j container.json my_container
 ----
 
+.Output
+[source,text]
+----
 Policy my_container created!
 
-Please load these modules using: # semodule -i my_container.cil
-/usr/share/udica/templates/\{base_container.cil,net_container.cil,home_container.cil}
+Please load these modules using: # semodule -i my_container.cil /usr/share/udica/templates/\{base_container.cil,net_container.cil,home_container.cil}
 
-Restart the container with: "`–security-opt
-label=type:my_container.process`" parameter
+Restart the container with: "`–security-opt label=type:my_container.process`" parameter
+----
 
-....
+You just created a custom SELinux security policy for the container. Now you can load this policy into the kernel and make it active.
 
-You just created a custom SELinux security policy for the container. Now you can
-load this policy into the kernel and make it active.
-
-```bash
+.Command
+[source,bash,subs="+macros,+attributes",role=execute]
+----
 semodule -i my_container.cil /usr/share/udica/templates/{base_container.cil,net_container.cil,home_container.cil}
-....
+----
 
-In `+Terminal 1+`, stop and re-launch the container so that the policies
-take effect.
+In `+Terminal 1+`, stop and re-launch the container so that the policies take effect.
 
-[source,bash]
+.Command
+[source,bash,subs="+macros,+attributes",role=execute]
 ----
 podman stop $CONTAINERID
 ----
 
-In `+Terminal 2+`, create a new container runtime from the image which
-uses the new, custom container policy
+In `+Terminal 2+`, create a new container runtime from the image which uses the new, custom container policy
 
-[source,bash]
+.Command
+[source,bash,subs="+macros,+attributes",role=execute]
 ----
 CONTAINER=$(podman run --security-opt label=type:my_container.process -v /home:/home:ro -v/var/spool:/var/spool:rw -d -p 80:80 -it registry.access.redhat.com/ubi9/ubi)
 ----
