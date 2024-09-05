@@ -15,7 +15,7 @@ sesearch -A -s my_container.process -t home_root_t -c dir -p read
 .Output
 [source,text]
 ----
-allow my_container.process home_root_t:dir { getattr ioctl lock open read search };
+allow my_container.process home_root_t:dir { ioctl lock read };
 ----
 
 There is an allow rule in place that allows read access to the */home* directory.
@@ -31,7 +31,7 @@ sesearch -A -s my_container.process -t var_spool_t -c dir -p read
 .Output
 [source,text]
 ----
-allow my_container.process var_spool_t:dir { add_name getattr ioctl lock open read remove_name searchwrite };
+allow my_container.process var_spool_t:dir { add_name create ioctl lock read remove_name rmdir setattr write };
 ----
 
 
