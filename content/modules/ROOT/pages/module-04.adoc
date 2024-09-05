@@ -60,4 +60,4 @@ semanage port -l | grep -w "80"
 ----
 
 .selinuxtype
-image::pop-out-2.png[selinux type]
+image::selinuxtype.png[selinux type]
