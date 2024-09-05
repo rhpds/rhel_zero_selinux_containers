@@ -19,7 +19,7 @@ cd /home/; ls
 .Output
 [source,text]
 ----
-bas gke-930957db5604c7804fbd gke-f34473de869e40d6894d mochtar myee rhel
+ec2-user  rhel
 ----
 
 This is now successful since there is an allow rule in place that tells SELinux to allow this action.
@@ -35,7 +35,7 @@ cd /var/spool/; ls
 .Output
 [source,text]
 ----
-anacron cron lpd mail plymouth rhsm
+anacron  at  cron  lpd  mail  rhsm
 ----
 
 Similarly, this is also successful because there is an allow rule in place that tells SELinux to allow this action.
@@ -51,7 +51,7 @@ touch test; ls
 .Output
 [source,text]
 ----
-anacron cron lpd mail plymouth rhsm test
+anacron  at  cron  lpd  mail  rhsm  test
 ----
 
 Install the netcat (nc) package inside the container to test for port bindings
