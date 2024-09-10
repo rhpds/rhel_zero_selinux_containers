@@ -78,7 +78,7 @@ Ncat: Listening on :::80
 Ncat: Listening on 0.0.0.0:80
 ----
 
-You can see from the above output that netcat was able to connect and listen on port 80. This is successful because there is a allow rule in place that tells SELinux to allow this network action on port 80.
+You can see from the above output that netcat was able to connect and listen on port 80. This is successful because there is an allow rule in place that tells SELinux to allow this network action on port 80.
 
 Tell nc to listen on port 8080 inside the container, and timeout after 5 seconds.
 
