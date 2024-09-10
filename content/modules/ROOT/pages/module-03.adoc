@@ -44,7 +44,15 @@ In `+Terminal 1+`, stop and re-launch the container so that the policies take ef
 podman stop $CONTAINERID
 ----
 
-In `+Terminal 2+`, create a new container runtime from the image which uses the new, custom container policy
+In `+Terminal 2+`, if you have not already, then please exit out of the container attached to earlier back into the shell.
+
+.Command
+[source,bash,subs="+macros,+attributes",role=execute]
+----
+exit
+----
+
+Now, create a new container runtime from the image which uses the new, custom container policy.
 
 .Command
 [source,bash,subs="+macros,+attributes",role=execute]
