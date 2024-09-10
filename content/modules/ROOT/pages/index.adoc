@@ -54,7 +54,7 @@ Click on the `Terminal 2` tab.
 .Terminal 2 tab
 image::terminal2tab.png[Terminal 2 tab]
 
-Create a container runtime using podman which passes in-container accesses to /home through to the host's /home read-only, passes in-container accesses to /var/spool through to the host's /var/spool read-write, and binds the host's port 80 to pass traffic to the container's port 80.
+Create a container runtime using podman which passes in-container access to /home through to the host's /home read-only, passes in-container access to /var/spool through to the host's /var/spool read-write, and binds the host's port 80 to pass traffic to the container's port 80.
 
 .Command
 [source,bash,subs="+macros,+attributes",role=execute]
