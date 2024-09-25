@@ -19,9 +19,6 @@ are already installed.
 
 Click on the `+Terminal 1+` tab.
 
-.Terminal 1 tab
-image::terminal1tab.png[Terminal 1 tab]
-
 Install the udica and setools-console packages on the container host
 
 .Command
@@ -50,9 +47,6 @@ podman images
 image::podmanimages.png[Podman Images]
 
 Click on the `Terminal 2` tab.
-
-.Terminal 2 tab
-image::terminal2tab.png[Terminal 2 tab]
 
 Create a container runtime using podman which passes in-container access to /home through to the host's /home read-only, passes in-container access to /var/spool through to the host's /var/spool read-write, and binds the host's port 80 to pass traffic to the container's port 80.
 
